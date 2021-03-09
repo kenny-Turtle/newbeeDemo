@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kenny.mall.dao.OrderItemMapper">
+    <resultMap id="BaseResultMap" type="com.kenny.mall.entity.OrderItem">
+        <id column="order_item_id" jdbcType="BIGINT" property="orderItemId"/>
+        <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="goods_id" jdbcType="BIGINT" property="goodsId"/>
+        <result column="goods_name" jdbcType="VARCHAR" property="goodsName"/>
+        <result column="goods_cover_img" jdbcType="VARCHAR" property="goodsCoverImg"/>
+        <result column="selling_price" jdbcType="INTEGER" property="sellingPrice"/>
+        <result column="goods_count" jdbcType="INTEGER" property="goodsCount"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        order_item_id,order_id,goods_id,goods_name,goods_cover_img,selling_price,goods_count,create_time
+    </sql>
+    <insert id="insertBatch" parameterType="com.kenny.mall.entity.OrderItem">
+        insert into tb_newbee_mall_order_item
+        (order_id,goods_id,goods_name,goods_cover_img,selling_price,goods_count)
+        values
+        <foreach collection="orderItems" item="orderItem" separator=",">
+            (
+            #{orderId},#{goodsId},#{goodsName},#{goodsCoverImg},#{sellingPrice},#{goodsCount}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectByOrderId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_order_item
+        where order_id = #{orderId}
+    </select>
+</mapper>

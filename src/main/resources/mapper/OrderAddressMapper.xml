@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kenny.mall.dao.OrderAddressMapper">
+    <resultMap id="BaseResultMap" type="com.kenny.mall.entity.OrderAddress">
+        <id column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="user_phone" jdbcType="VARCHAR" property="userPhone"/>
+        <result column="province_name" jdbcType="VARCHAR" property="provinceName"/>
+        <result column="city_name" jdbcType="VARCHAR" property="cityName"/>
+        <result column="region_name" jdbcType="VARCHAR" property="regionName"/>
+        <result column="detail_address" jdbcType="VARCHAR" property="detailAddress"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        order_id,user_name,user_phone,province_name,city_name,region_name,detail_address
+    </sql>
+
+    <insert id="insertSelective" parameterType="com.kenny.mall.entity.OrderAddress">
+        insert into tb_newbee_mall_order_address
+        <trim prefix="(" suffixOverrides="," suffix=")">
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="userPhone != null">
+                user_phone,
+            </if>
+            <if test="provinceName != null">
+                province_name,
+            </if>
+            <if test="cityName != null">
+                city_name,
+            </if>
+            <if test="regionName != null">
+                region_name,
+            </if>
+            <if test="DetailAddress != null">
+                detail_address,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderId != null">
+                #{orderId},
+            </if>
+            <if test="userName != null">
+                #{userName},
+            </if>
+            <if test="userPhone != null">
+                #{userPhone},
+            </if>
+            <if test="provinceName != null">
+                #{provinceName},
+            </if>
+            <if test="cityName != null">
+                #{cityName},
+            </if>
+            <if test="regionName != null">
+                #{regionName},
+            </if>
+            <if test="DetailAddress != null">
+                #{detailAddress},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>
