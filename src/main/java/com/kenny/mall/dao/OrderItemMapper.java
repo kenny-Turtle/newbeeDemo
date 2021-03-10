@@ -19,5 +19,10 @@ public interface OrderItemMapper {
     * */
     List<OrderItem> selectByOrderId(Long orderId);
 
+    /*
+    * 根据订单ID集合ids获取订单项列表
+    * */
+    List<OrderItem> selectByOrderIds(@Param("orderIds") List<Long> orderIds);
+
 
 }

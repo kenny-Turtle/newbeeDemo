@@ -32,4 +32,15 @@
         from tb_newbee_mall_order_item
         where order_id = #{orderId}
     </select>
+
+    <select id="selectByOrderIds" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_order_item
+        where order_id
+        in
+        <foreach collection="orderIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
 </mapper>

@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
@@ -181,9 +183,20 @@ public class OrderServiceImpl implements OrderService {
             }
             List<Long> orderIds = orders.stream().map(Order::getOrderId).collect(Collectors.toList());
             if(!CollectionUtils.isEmpty(orderIds)){
-
+                List<OrderItem> orderItems = orderItemMapper.selectByOrderIds(orderIds);
+                Map<Long, List<OrderItem>> itemByOrderIdMap = orderItems.stream().collect(groupingBy(OrderItem::getOrderId));
+                for (OrderListVO orderListVO : orderListVOS) {
+                    //封装每个订单列表的订单项数据
+                    if(itemByOrderIdMap.containsKey(orderListVO.getOrderId())){
+                        List<OrderItem> orderItemTemp = itemByOrderIdMap.get(orderListVO.getOrderId());
+                        //将orderItem对象列表转换成orderItemVO对象列表
+                        List<OrderItemVO> orderItemVOS = BeanUtil.copyList(orderItemTemp,OrderItemVO.class);
+                        orderListVO.setOrderItemVOList(orderItemVOS);
+                    }
+                }
             }
         }
-        return null;
+        PageResult pageResult = new PageResult(pageQueryUtil.getPage(),total,pageQueryUtil.getLimit(),orderListVOS);
+        return pageResult;
     }
 }
