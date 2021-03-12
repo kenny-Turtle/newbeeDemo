@@ -95,4 +95,33 @@ public class OrderAPI {
         }
     }
 
+    @PutMapping("/order/{orderNo}/cancel")
+    @ApiOperation(value = "订单取消接口",notes = "参数未订单号")
+    public Result cancelOrder(@ApiParam(value = "订单号")@PathVariable("orderNo") String orderNo,@TokenToMallUser MallUser mallUser){
+
+        String cancelOrderResult = orderService.cancelOrder(orderNo, mallUser.getUserId());
+        if(ServiceResultEnum.SUCCESS.getResult().equals(cancelOrderResult)){
+            return ResultGenerator.genSuccessResult();
+        }else{
+            return ResultGenerator.genFailResult(cancelOrderResult);
+        }
+    }
+
+    @PutMapping("/order/{orderNo}/finish")
+    @ApiOperation(value = "确认收获接口", notes = "参数为订单号")
+    public Result finishOrder(@ApiParam(value = "订单号")@PathVariable("orderNo")String orderNo,@TokenToMallUser MallUser mallUser){
+        String finishOrderResult = orderService.finishOrder(orderNo, mallUser.getUserId());
+        if(ServiceResultEnum.SUCCESS.getResult().equals(finishOrderResult)){
+            return ResultGenerator.genSuccessResult();
+        }else{
+            return ResultGenerator.genFailResult(finishOrderResult);
+        }
+    }
+
 }
+
+
+
+
+
+

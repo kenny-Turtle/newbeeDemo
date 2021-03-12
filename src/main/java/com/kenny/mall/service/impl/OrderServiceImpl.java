@@ -18,10 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -185,5 +182,37 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return null;
+    }
+
+    @Override
+    public String cancelOrder(String orderNo, Long userId) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if(order != null){
+            //验证是否是当前userid下的订单，否则报错
+            //订单状态刷新
+            if(orderMapper.closeOrder(Collections.singletonList(order.getOrderId()),OrderStatusEnum.ORDER_CLOSED_BY_MALLUSER.getOrderStatus()) > 0){
+                return ServiceResultEnum.SUCCESS.getResult();
+            }else{
+                return ServiceResultEnum.DB_ERROR.getResult();
+            }
+        }
+        return ServiceResultEnum.ORDER_NOT_EXIST_ERROR.getResult();
+    }
+
+    @Override
+    public String finishOrder(String orderNo, Long userId) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+        if(order != null){
+            //验证是否是当前userid下的订单，否则报错
+            //订单状态刷新
+            order.setOrderStatus((byte) OrderStatusEnum.ORDER_SUCCESS.getOrderStatus());
+            order.setUpdateTime(new Date());
+            if(orderMapper.updateByPrimaryKeySelective(order)>0){
+                return ServiceResultEnum.SUCCESS.getResult();
+            }else{
+                return ServiceResultEnum.DB_ERROR.getResult();
+            }
+        }
+        return ServiceResultEnum.ORDER_NOT_EXIST_ERROR.getResult();
     }
 }

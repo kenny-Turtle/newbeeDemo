@@ -33,4 +33,14 @@ public interface OrderService {
     * */
     PageResult getMyOrder(PageQueryUtil pageQueryUtil);
 
+    /*
+    * 手动取消订单
+    * */
+    String cancelOrder(String orderNo,Long userId);
+
+    /*
+    * 确认收货
+    * */
+    String finishOrder(String orderNo,Long userId);
+
 }
