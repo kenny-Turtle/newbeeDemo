@@ -119,5 +119,16 @@ public class OrderAPI {
         return ResultGenerator.genSuccessResult(orderService.getMyOrder(pageQueryUtil));
     }
 
+    @PutMapping("/order/{orderNo}/cancel")
+    @ApiOperation(value = "订单取消接口",notes = "参数为订单号")
+    public Result cancelOrder(@ApiParam(value = "订单号")@PathVariable("orderNo")String orderNo,@TokenToMallUser MallUser mallUser){
+        String cancelResult = orderService.cancelOrder(orderNo, mallUser.getUserId());
+        if(ServiceResultEnum.SUCCESS.getResult().equals(cancelResult)){
+            return ResultGenerator.genSuccessResult();
+        }else{
+            return ResultGenerator.genFailResult(cancelResult);
+        }
+    }
+
 
 }
