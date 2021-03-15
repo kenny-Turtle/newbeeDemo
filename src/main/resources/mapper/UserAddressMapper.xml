@@ -26,5 +26,140 @@
         from tb_newbee_mall_user_address
         where address_id = #{addressId,jdbcType=BIGINT} and is_deleted = 0
     </select>
-
+    <select id="findMyAddressList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_user_address
+        where user_id = #{userId} and is_deleted = 0
+        order by address_id desc
+        limit 20  /*最多返回20条*/
+    </select>
+    <select id="getMyDefaultAddress" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_newbee_mall_user_address
+        where user_id = #{userId} and default_flag = 1 and is_deleted = 0 limit 1
+    </select>
+    <update id="updateByPrimaryKeySelective" parameterType="com.kenny.mall.entity.UserAddress">
+        update tb_newbee_mall_user_address
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userPhone != null">
+                user_phone = #{userPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultFlag != null">
+                default_flag = #{defaultFlag,jdbcType=TINYINT},
+            </if>
+            <if test="provinceName != null">
+                province_name = #{provinceName,jdbcType=VARCHAR},
+            </if>
+            <if test="cityName != null">
+                city_name = #{cityName,jdbcType=VARCHAR},
+            </if>
+            <if test="regionName != null">
+                region_name = #{regionName,jdbcType=VARCHAR},
+            </if>
+            <if test="detailAddress != null">
+                detail_address = #{detailAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where address_id = #{addressId}
+    </update>
+    <insert id="insertSelective" parameterType="com.kenny.mall.entity.UserAddress">
+        insert into tb_newbee_mall_user_address
+        <trim prefix="(" suffixOverrides="," suffix=")">
+            <if test="addressId != null">
+                address_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="userPhone != null">
+                user_phone,
+            </if>
+            <if test="defaultFlag != null">
+                default_flag,
+            </if>
+            <if test="provinceName != null">
+                province_name,
+            </if>
+            <if test="cityName != null">
+                city_name,
+            </if>
+            <if test="regionName != null">
+                region_name,
+            </if>
+            <if test="detailAddress != null">
+                detail_address,
+            </if>
+            <if test="isDeleted != null">
+                is_deleted,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="addressId != null">
+                #{addressId,jdbcType=BIGINT},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userPhone != null">
+                #{userPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultFlag != null">
+                #{defaultFlag,jdbcType=TINYINT},
+            </if>
+            <if test="provinceName != null">
+                #{provinceName,jdbcType=VARCHAR},
+            </if>
+            <if test="cityName != null">
+                #{cityName,jdbcType=VARCHAR},
+            </if>
+            <if test="regionName != null">
+                #{regionName,jdbcType=VARCHAR},
+            </if>
+            <if test="detailAddress != null">
+                #{detailAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="deletedByPrimaryKey" parameterType="java.lang.Long">
+        update tb_newbee_mall_user_address set is_deleted = 1
+        where address_id = #{addressId}
+    </update>
 </mapper>
