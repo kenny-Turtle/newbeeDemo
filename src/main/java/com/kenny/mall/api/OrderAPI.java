@@ -2,7 +2,9 @@ package com.kenny.mall.api;
 
 import com.kenny.mall.api.param.SaveOrderParam;
 import com.kenny.mall.api.vo.OrderDetailVO;
+import com.kenny.mall.api.vo.OrderListVO;
 import com.kenny.mall.api.vo.ShoppingCartItemVO;
+import com.kenny.mall.common.Constants;
 import com.kenny.mall.common.NewBeeMallException;
 import com.kenny.mall.common.ServiceResultEnum;
 import com.kenny.mall.config.annotation.TokenToMallUser;
@@ -13,6 +15,8 @@ import com.kenny.mall.entity.UserAddress;
 import com.kenny.mall.service.NewBeeMallShoppingCartService;
 import com.kenny.mall.service.OrderService;
 import com.kenny.mall.service.UserAddressService;
+import com.kenny.mall.util.PageQueryUtil;
+import com.kenny.mall.util.PageResult;
 import com.kenny.mall.util.Result;
 import com.kenny.mall.util.ResultGenerator;
 import io.swagger.annotations.Api;
@@ -24,7 +28,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Api(value = "v1",tags = "订单操作相关接口")
@@ -81,7 +87,7 @@ public class OrderAPI {
     @GetMapping("order/{orderNo}")
     @ApiOperation(value = "订单详情接口",notes = "传参为订单号")
     public Result<OrderDetailVO> orderDetailPage(@ApiParam(value = "订单号") String orderNo,@TokenToMallUser MallUser user){
-
+        return null;
     }
 
     @GetMapping("/paysuccess")
@@ -95,33 +101,23 @@ public class OrderAPI {
         }
     }
 
-    @PutMapping("/order/{orderNo}/cancel")
-    @ApiOperation(value = "订单取消接口",notes = "参数未订单号")
-    public Result cancelOrder(@ApiParam(value = "订单号")@PathVariable("orderNo") String orderNo,@TokenToMallUser MallUser mallUser){
-
-        String cancelOrderResult = orderService.cancelOrder(orderNo, mallUser.getUserId());
-        if(ServiceResultEnum.SUCCESS.getResult().equals(cancelOrderResult)){
-            return ResultGenerator.genSuccessResult();
-        }else{
-            return ResultGenerator.genFailResult(cancelOrderResult);
+    @GetMapping("/order")
+    @ApiOperation(value = "订单列表接口",notes = "传参为页码")
+    public Result<PageResult<List<OrderListVO>>> orderList(
+            @ApiParam(value = "页码")@RequestParam(required = false) Integer pageNumber,
+            @ApiParam(value = "订单状态：0待支付。1待确认。2待发货。3已发货。4交易成功")@RequestParam(required = false) Integer status,
+            @TokenToMallUser MallUser mallUser){
+        Map params = new HashMap(4);
+        if(pageNumber == null || pageNumber < 1){
+            pageNumber = 1;
         }
+        params.put("userId", mallUser.getUserId());
+        params.put("orderStatus",status);
+        params.put("page",pageNumber);
+        params.put("limit", Constants.ORDER_SEARCH_PAGE_LIMIT);
+        PageQueryUtil pageQueryUtil = new PageQueryUtil(params);
+        return ResultGenerator.genSuccessResult(orderService.getMyOrder(pageQueryUtil));
     }
 
-    @PutMapping("/order/{orderNo}/finish")
-    @ApiOperation(value = "确认收获接口", notes = "参数为订单号")
-    public Result finishOrder(@ApiParam(value = "订单号")@PathVariable("orderNo")String orderNo,@TokenToMallUser MallUser mallUser){
-        String finishOrderResult = orderService.finishOrder(orderNo, mallUser.getUserId());
-        if(ServiceResultEnum.SUCCESS.getResult().equals(finishOrderResult)){
-            return ResultGenerator.genSuccessResult();
-        }else{
-            return ResultGenerator.genFailResult(finishOrderResult);
-        }
-    }
 
 }
-
-
-
-
-
-
